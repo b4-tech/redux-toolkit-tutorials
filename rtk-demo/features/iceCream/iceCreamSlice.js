@@ -5,14 +5,14 @@ const initialState = {
 };
 
 const iceCreamSlice = createSlice({
-  name: 'iceCream',
+  name: "iceCream",
   initialState,
   reducers: {
     ordered: (state) => {
       state.numberOfIceCreams--;
     },
     restocked: (state, action) => {
-      state.numberOfIceCreams += action.payload;
+      state.numberOfIceCreams += action.payload || 1;
     },
   },
 });
