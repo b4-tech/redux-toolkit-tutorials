@@ -1,10 +1,16 @@
 const redux = require("redux");
+const thunkMiddleware = require("redux-thunk").default;
+const axios = require("axios");
 const createStore = redux.createStore;
+const applyMiddleware = redux.applyMiddleware;
+
+const reduxLogger = require("redux-logger");
+const logger = reduxLogger.createLogger();
 
 const initialState = {
   loading: false,
   users: [],
-  error: null,
+  error: "",
 };
 
 const FETCH_USERS_REQUESTED = "FETCH_USERS_REQUESTED";
@@ -17,7 +23,7 @@ const fetchUsersRequest = () => {
   };
 };
 
-const fetchUsersSucceeded = () => {
+const fetchUsersSuccess = (users) => {
   return {
     type: FETCH_USERS_SUCCEEDED,
     payload: users,
@@ -26,12 +32,28 @@ const fetchUsersSucceeded = () => {
 
 const fetchUsersFailure = (error) => {
   return {
-    type: FETCH_USERS_REQUESTED,
+    type: FETCH_USERS_FAILED,
     payload: error,
   };
 };
 
+const fetchUsers = () => {
+  return function (dispatch) {
+    dispatch(fetchUsersRequest());
+    axios
+      .get("https://jsonplaceholder.typicode.com/users")
+      .then((response) => {
+        const users = response.data.map((user) => user.id);
+        dispatch(fetchUsersSuccess(users));
+      })
+      .catch((error) => {
+        dispatch(fetchUsersFailure(error.message));
+      });
+  };
+};
+
 const reducer = (state = initialState, action) => {
+  console.log(action.type);
   switch (action.type) {
     case FETCH_USERS_REQUESTED:
       return {
@@ -40,20 +62,20 @@ const reducer = (state = initialState, action) => {
       };
     case FETCH_USERS_SUCCEEDED:
       return {
-        ...state,
         loading: false,
         users: action.payload,
+        error: "",
       };
-    case FETCH_USERS_SUCCEEDED:
+    case FETCH_USERS_FAILED:
       return {
         loading: false,
         users: [],
         error: action.payload,
       };
-
-    default:
-      return state;
   }
 };
 
-const store = createStore(redux);
+const middleware = [thunkMiddleware, logger];
+const store = createStore(reducer, applyMiddleware(...middleware));
+
+store.dispatch(fetchUsers());
