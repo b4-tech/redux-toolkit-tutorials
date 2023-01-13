@@ -20,7 +20,7 @@ git clone https://github.com/b4-tech/redux-toolkit-tutorials.git
 2. Install all dependencies:
 
 ```
-npm init
+npm run init
 ```
 
 ## Usage
