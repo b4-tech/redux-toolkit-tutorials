@@ -1,0 +1,9 @@
+{
+  "name": "redux-toolkit-tutorials",
+  "version": "1.0.0",
+  "description": "This repository contains the code for the Redux Toolkit course by [Codevolution](https://www.youtube.com/@Codevolution). The course covers the usage of the Redux Toolkit library for managing state in a React application.",
+  "scripts": {
+    "init": "cd redux-demo && npm install && cd ../rtk-demo && npm install && cd ../react-rtk-ts-demo && npm install && cd ../react-rtk-demo && npm install"
+  },
+  "license": "ISC"
+}
